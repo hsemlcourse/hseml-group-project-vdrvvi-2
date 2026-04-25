@@ -4,19 +4,26 @@
 Моделирование и эксперименты (без XGBoost/LightGBM)
 """
 
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-from sklearn.preprocessing import StandardScaler
-from sklearn.decomposition import PCA
-from sklearn.linear_model import LinearRegression, Ridge, Lasso
-from sklearn.neighbors import KNeighborsRegressor
-from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor, VotingRegressor
-from sklearn.model_selection import GridSearchCV
 import os
 import warnings
+
+import joblib
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+from sklearn.decomposition import PCA
+from sklearn.ensemble import (
+    GradientBoostingRegressor,
+    RandomForestRegressor,
+    VotingRegressor,
+)
+from sklearn.linear_model import Lasso, LinearRegression, Ridge
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from sklearn.model_selection import GridSearchCV
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.preprocessing import StandardScaler
+
 warnings.filterwarnings('ignore')
 
 # ------------------------------
@@ -199,7 +206,7 @@ print(f"Лучшая MAE (CV): {-grid_search.best_score_:.3f}°C")
 
 gb_optimized = grid_search.best_estimator_
 y_pred_gb_opt = gb_optimized.predict(X_val)
-print(f"\nGradient Boosting оптимизированный на валидации:")
+print("\nGradient Boosting оптимизированный на валидации:")
 print(f"MAE: {mean_absolute_error(y_val, y_pred_gb_opt):.3f}°C")
 print(f"R²: {r2_score(y_val, y_pred_gb_opt):.4f}")
 
@@ -457,7 +464,6 @@ print(f"""
 """)
 
 # Сохраняем финальную модель
-import joblib
 os.makedirs('data/models', exist_ok=True)
 joblib.dump(final_model, 'data/models/final_gb_model.pkl')
 joblib.dump(scaler, 'data/models/scaler.pkl')
